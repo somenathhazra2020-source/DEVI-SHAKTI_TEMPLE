@@ -1,0 +1,28 @@
+# HAZRA BARI VIRTUAL DURGA MANDIR 2026 — COLAB LAUNCHER
+
+!pip -q install streamlit
+
+# Make sure your Maa Durga image is uploaded as:
+# /content/maa_durga.png
+#
+# If your image has a different filename, rename it before launching.
+
+import os
+import subprocess
+from google.colab import output
+
+if not os.path.exists("/content/app.py"):
+    raise FileNotFoundError("app.py is missing. Upload the supplied app.py to /content.")
+
+# Stop any previous Streamlit process if necessary
+!pkill -f "streamlit run" || true
+
+process = subprocess.Popen([
+    "streamlit", "run", "/content/app.py",
+    "--server.address=0.0.0.0",
+    "--server.port=8501",
+    "--server.headless=true",
+])
+
+print("Streamlit is starting...")
+output.serve_kernel_port_as_iframe(8501, height=1000)
