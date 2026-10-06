@@ -1323,7 +1323,7 @@ DECORATIONS = {
 }
 
 def devotee_level(seva_count, japa_count, stats):
-    score = int(seva_count)*10 + int(japa_count) + sum(int(stats.get(k,0)) for k in ("darshan","diyas","flowers","aarti","pushpanjali"))*2
+    score = int(seva_count)*10 + int(japa_count) + sum(int(stats[k]) for k in ("darshan","diyas","flowers","aarti","pushpanjali"))*2
     levels=[(0,"🌱 New Bhakt"),(100,"🙏 Bhakt"),(300,"🌺 Sevak"),(700,"🪔 Maa Premi"),(1500,"📿 Bhakti Sadhak"),(3000,"👑 Param Bhakt")]
     current=levels[0]
     for threshold,name in levels:
@@ -1765,8 +1765,8 @@ def home():
     a,b,c,d=st.columns(4)
     with a: st.markdown(f"<div class='stat-card'><div class='stat-value'>{total_all}</div><div class='stat-label'>🙏 Chadhawa Units</div></div>", unsafe_allow_html=True)
     with b: st.markdown(f"<div class='stat-card'><div class='stat-value'>{total_hibiscus}</div><div class='stat-label'>🌺 Flowers at Altar</div></div>", unsafe_allow_html=True)
-    with c: st.markdown(f"<div class='stat-card'><div class='stat-value'>{stats.get('aarti',0)}</div><div class='stat-label'>🪔 Aarti Seva</div></div>", unsafe_allow_html=True)
-    with d: st.markdown(f"<div class='stat-card'><div class='stat-value'>{stats.get('streak',0)}</div><div class='stat-label'>🔥 Bhakti Streak</div></div>", unsafe_allow_html=True)
+    with c: st.markdown(f"<div class='stat-card'><div class='stat-value'>{stats['aarti']}</div><div class='stat-label'>🪔 Aarti Seva</div></div>", unsafe_allow_html=True)
+    with d: st.markdown(f"<div class='stat-card'><div class='stat-value'>{stats['streak']}</div><div class='stat-label'>🔥 Bhakti Streak</div></div>", unsafe_allow_html=True)
 
     st.markdown("""
     <div class="section-title">
