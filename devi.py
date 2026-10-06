@@ -6,7 +6,22 @@ import io
 import base64
 import re
 import requests
-from bs4 import BeautifulSoup
+from html.parser import HTMLParser
+
+class _TextExtractor(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.parts=[]
+    def handle_data(self, data):
+        if data and data.strip():
+            self.parts.append(data.strip())
+    def text(self):
+        return " ".join(self.parts)
+
+def _html_to_text(html):
+    parser = _TextExtractor()
+    parser.feed(html)
+    return parser.text()
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
@@ -114,8 +129,7 @@ def fetch_drik_panchang():
             headers={"User-Agent": "Mozilla/5.0 (compatible; HazraBariVirtualMandir/1.0)"},
         )
         r.raise_for_status()
-        soup = BeautifulSoup(r.text, "html.parser")
-        text = _dp_clean(soup.get_text(" ", strip=True))
+        text = _dp_clean(_html_to_text(r.text))
 
         def extract(label, stops):
             stop_pattern = "|".join(re.escape(x) for x in stops)
@@ -166,8 +180,7 @@ def fetch_drik_upcoming_festivals():
             headers={"User-Agent": "Mozilla/5.0 (compatible; HazraBariVirtualMandir/1.0)"},
         )
         r.raise_for_status()
-        soup = BeautifulSoup(r.text, "html.parser")
-        text = _dp_clean(soup.get_text(" ", strip=True))
+        text = _dp_clean(_html_to_text(r.text))
         month_name = india_now().strftime("%B %Y")
         m = re.search(re.escape(month_name) + r" Festivals(.*?)(?:[A-Z][a-z]+ "+str(india_now().year)+r" Festivals|$)", text, re.I)
         if not m:
