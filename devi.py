@@ -105,12 +105,10 @@ DRIK_PANCHANG_URL = "https://www.drikpanchang.com/panchang/day-panchang.html?geo
 DRIK_MONTH_URL = "https://www.drikpanchang.com/panchang/month-panchang.html?geoname-id=1272175"
 TEMPLE_LOCATION_NAME = "Sagarbhanga, Durgapur-11"
 TEMPLE_LOCATION_FULL = "Sagarbhanga, Durgapur-11, Paschim Bardhaman, West Bengal - 713211, India"
-TEMPLE_LAT = 23.4968
-TEMPLE_LON = 87.3327
 
 
 def _dp_clean(value):
-    return re.sub(r"\\s+", " ", str(value or "")).strip()
+    return re.sub(r"\s+", " ", str(value or "")).strip()
 
 
 @st.cache_data(ttl=900, show_spinner=False)
@@ -136,10 +134,6 @@ def fetch_drik_panchang():
             m = re.search(re.escape(label) + r"\s*(.*?)(?=" + stop_pattern + r"|$)", text, re.I)
             return _dp_clean(m.group(1)) if m else "Unavailable"
 
-        result["tithi"] = extract("Tithi", ["Nakshatra", "Yoga", "Karana"])
-        result["nakshatra"] = extract("Nakshatra", ["Yoga", "Karana", "Paksha"])
-        result["yoga"] = extract("Yoga", ["Karana", "Paksha", "Weekday"])
-        result["karana"] = extract("Karana", ["Paksha", "Weekday", "Sunsign"])
         result["paksha"] = extract("Paksha", ["Weekday", "Tithi"])
         result["weekday"] = extract("Weekday", ["Paksha", "Tithi"])
         result["sunrise"] = extract("Sunrise", ["Sunset", "Moonrise"])
@@ -215,7 +209,7 @@ def show_drik_panchang_home():
     <span>Drik Panchang • {TEMPLE_LOCATION_NAME} • IST</span></div>
     <div class='card' style='margin-bottom:16px'>
       <div style='font-weight:800;color:#7b0c16'>📍 {TEMPLE_LOCATION_FULL}</div>
-      <div class='small-muted' style='margin-top:5px'>Panchang is calculated using Drik Panchang's Durgapur location and shown for this temple address.</div>
+      <div class='small-muted' style='margin-top:5px'>Drik Panchang calculation: Durgapur, West Bengal. Temple location: Sagarbhanga, Durgapur-11, Paschim Bardhaman - 713211.</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -228,7 +222,6 @@ def show_drik_panchang_home():
             st.markdown(f"<div class='stat-card'><div class='stat-label'>{label}</div><div style='font-weight:800;font-size:17px;color:#6c0b14'>{value}</div></div>", unsafe_allow_html=True)
 
     e,f,g = st.columns(3)
-    for col,label,key in [(e,"☯️ Paksha","paksha"),(f,"🧘 Yoga","yoga"),(g,"🔱 Karana","karana")]:
         with col:
             st.markdown(f"<div class='card' style='padding:14px'><b>{label}</b><div style='margin-top:5px'>{p[key]}</div></div>", unsafe_allow_html=True)
 
